@@ -1,4 +1,4 @@
-import { CartSkeleton } from '@/components/skeletons/cart-skeleton';
+import { CartSkeleton } from '@/components/shared/skeletons/cart-skeleton';
 
 export default function CartLoading() {
     return (

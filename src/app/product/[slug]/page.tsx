@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { query } from '@/lib/vendure/api';
 import { GetProductDetailQuery } from '@/lib/vendure/queries';
-import { ProductImageCarousel } from '@/components/product-image-carousel';
-import { ProductInfo } from '@/components/product-info';
-import { RelatedProducts } from '@/components/related-products';
+import { ProductImageCarousel } from '@/components/commerce/product-image-carousel';
+import { ProductInfo } from '@/components/commerce/product-info';
+import { RelatedProducts } from '@/components/commerce/related-products';
 import {
     Accordion,
     AccordionContent,

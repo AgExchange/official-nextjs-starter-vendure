@@ -5,7 +5,7 @@ import {
     NavigationMenuList,
     NavigationMenuItem,
 } from '@/components/ui/navigation-menu';
-import {NavbarLink} from '@/components/navbar/navbar-link';
+import {NavbarLink} from '@/components/layout/navbar/navbar-link';
 
 export async function NavbarCollections() {
     "use cache";

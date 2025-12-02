@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, MapPin, Truck, CreditCard, Edit } from 'lucide-react';
 import { useCheckout } from '../checkout-provider';
 import { placeOrder as placeOrderAction } from '../actions';
-import { Price } from '@/components/price';
+import { Price } from '@/components/commerce/price';
 
 interface ReviewStepProps {
   onEditStep: (step: 'shipping' | 'delivery' | 'payment') => void;

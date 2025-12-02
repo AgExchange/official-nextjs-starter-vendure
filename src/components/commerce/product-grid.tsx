@@ -1,6 +1,6 @@
 import {ResultOf} from '@/graphql';
 import {ProductCard} from './product-card';
-import {Pagination} from './pagination';
+import {Pagination} from '@/components/shared/pagination';
 import {SortDropdown} from './sort-dropdown';
 import {SearchProductsQuery} from "@/lib/vendure/queries";
 import {getActiveChannel} from '@/lib/vendure/actions';

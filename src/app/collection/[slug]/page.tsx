@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { query } from '@/lib/vendure/api';
 import { SearchProductsQuery, GetCollectionProductsQuery } from '@/lib/vendure/queries';
-import { ProductGrid } from '@/components/product-grid';
-import { FacetFilters } from '@/components/facet-filters';
-import { ProductGridSkeleton } from '@/components/product-grid-skeleton';
+import { ProductGrid } from '@/components/commerce/product-grid';
+import { FacetFilters } from '@/components/commerce/facet-filters';
+import { ProductGridSkeleton } from '@/components/shared/product-grid-skeleton';
 import { buildSearchInput, getCurrentPage } from '@/lib/search-helpers';
 import { cacheLife, cacheTag } from 'next/cache';
 import {

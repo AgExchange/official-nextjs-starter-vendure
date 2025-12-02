@@ -1,11 +1,11 @@
-import {NavbarLogo} from '@/components/navbar/navbar-logo';
-import {NavbarCollections} from '@/components/navbar/navbar-collections';
-import {NavbarCart} from '@/components/navbar/navbar-cart';
-import {NavbarUser} from '@/components/navbar/navbar-user';
+import {NavbarLogo} from '@/components/layout/navbar/navbar-logo';
+import {NavbarCollections} from '@/components/layout/navbar/navbar-collections';
+import {NavbarCart} from '@/components/layout/navbar/navbar-cart';
+import {NavbarUser} from '@/components/layout/navbar/navbar-user';
 import {Suspense} from "react";
-import {SearchInput} from '@/components/search-input';
-import {NavbarUserSkeleton} from '@/components/skeletons/navbar-user-skeleton';
-import {SearchInputSkeleton} from '@/components/skeletons/search-input-skeleton';
+import {SearchInput} from '@/components/layout/search-input';
+import {NavbarUserSkeleton} from '@/components/shared/skeletons/navbar-user-skeleton';
+import {SearchInputSkeleton} from '@/components/shared/skeletons/search-input-skeleton';
 
 export function Navbar() {
     return (

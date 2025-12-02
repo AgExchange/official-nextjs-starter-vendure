@@ -1,4 +1,4 @@
-import { ProductGridSkeleton } from '@/components/product-grid-skeleton';
+import { ProductGridSkeleton } from '@/components/shared/product-grid-skeleton';
 
 export function SearchResultsSkeleton() {
     return (

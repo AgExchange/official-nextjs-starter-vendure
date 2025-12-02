@@ -1,5 +1,5 @@
 import {cacheLife, cacheTag} from 'next/cache';
-import {CartIcon} from '@/components/cart-icon';
+import {CartIcon} from '@/components/commerce/cart-icon';
 import {query} from '@/lib/vendure/api';
 import {GetActiveOrderQuery} from '@/lib/vendure/queries';
 
