@@ -14,9 +14,6 @@ const nextConfig: NextConfig = {
                 hostname: 'demo.vendure.io'
             }
         ],
-    },
-    experimental: {
-        authInterrupts: true,
     }
 };
 
