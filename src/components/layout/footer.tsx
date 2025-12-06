@@ -96,7 +96,7 @@ export async function Footer() {
                             rel="noopener noreferrer"
                             className="hover:text-foreground transition-colors"
                         >
-                            <Image src="/vendure.svg" alt="Vendure" width={40} height={27} className="h-4 w-auto" />
+                            <Image src="/vendure.svg" alt="Vendure" width={40} height={27} className="h-4 w-auto dark:invert" />
                         </a>
                         <span>&</span>
                         <a
@@ -105,7 +105,7 @@ export async function Footer() {
                             rel="noopener noreferrer"
                             className="hover:text-foreground transition-colors"
                         >
-                            <Image src="/next.svg" alt="Next.js" width={16} height={16} className="h-5 w-auto" />
+                            <Image src="/next.svg" alt="Next.js" width={16} height={16} className="h-5 w-auto dark:invert" />
                         </a>
                     </div>
                 </div>

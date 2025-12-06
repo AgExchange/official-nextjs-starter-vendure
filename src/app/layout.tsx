@@ -4,6 +4,7 @@ import "./globals.css";
 import {Toaster} from "@/components/ui/sonner";
 import {Navbar} from "@/components/layout/navbar";
 import {Footer} from "@/components/layout/footer";
+import {ThemeProvider} from "@/components/providers/theme-provider";
 import {SITE_NAME, SITE_URL} from "@/lib/metadata";
 
 const geistSans = Geist({
@@ -57,14 +58,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({children}: LayoutProps<'/'>) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
             >
-                <Navbar />
-                {children}
-                <Footer />
-                <Toaster />
+                <ThemeProvider>
+                    <Navbar />
+                    {children}
+                    <Footer />
+                    <Toaster />
+                </ThemeProvider>
             </body>
         </html>
     );
