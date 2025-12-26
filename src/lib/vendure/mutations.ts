@@ -266,6 +266,7 @@ export const TransitionOrderToStateMutation = graphql(`
     }
 `);
 
+// Update existing AddPaymentToOrderMutation to include paymentErrorMessage
 export const AddPaymentToOrderMutation = graphql(`
     mutation AddPaymentToOrder($input: PaymentInput!) {
         addPaymentToOrder(input: $input) {
@@ -280,6 +281,16 @@ export const AddPaymentToOrderMutation = graphql(`
                     amount
                     state
                 }
+            }
+            ... on PaymentDeclinedError {
+                errorCode
+                message
+                paymentErrorMessage
+            }
+            ... on PaymentFailedError {
+                errorCode
+                message
+                paymentErrorMessage
             }
             ... on ErrorResult {
                 errorCode
@@ -412,6 +423,20 @@ export const UpdateCustomerEmailAddressMutation = graphql(`
                 success
             }
             ... on ErrorResult {
+                errorCode
+                message
+            }
+        }
+    }
+`);
+
+export const CreatePaystackPaymentIntentMutation = graphql(`
+    mutation CreatePaystackPaymentIntent($input: PaystackPaymentIntentInput!) {
+        createPaystackPaymentIntent(input: $input) {
+            ... on PaystackPaymentIntent {
+                url
+            }
+            ... on PaystackPaymentIntentError {
                 errorCode
                 message
             }
