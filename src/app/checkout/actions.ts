@@ -98,7 +98,9 @@ export async function transitionToArrangingPayment() {
 
 export async function placeOrder(paymentMethodCode: string, metadata: Record<string, unknown> = {}) {
     // First, transition the order to ArrangingPayment state
-    await transitionToArrangingPayment();
+    if (!metadata.reference) {
+        await transitionToArrangingPayment();
+    }
 
     // For standard payment, include the required fields
     if (paymentMethodCode === 'standard-payment') {
