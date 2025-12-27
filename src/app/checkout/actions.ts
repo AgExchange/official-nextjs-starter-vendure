@@ -120,16 +120,17 @@ export async function placeOrder(paymentMethodCode: string, metadata: Record<str
     }*/
 
 if (paymentMethodCode === 'paystack' && !metadata.reference) {
-    const { data } = await mutate(CreatePaystackPaymentIntentMutation, {
+    const result = await mutate(CreatePaystackPaymentIntentMutation, {
         redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback`
     }, { useAuthToken: true });
-    // Type assertion until codegen is run
+
     const intent = result.data?.createPaystackPaymentIntent as 
         { url?: string; message?: string } | undefined;
-    if (data?.createPaystackPaymentIntent?.url) {
-        redirect(data.createPaystackPaymentIntent.url);
+
+    if (intent?.url) {
+        redirect(intent.url);
     }
-    throw new Error(data?.createPaystackPaymentIntent?.message || 'Payment failed');
+    throw new Error(intent?.message || 'Payment failed');
 }
 
     // Add payment to the order
