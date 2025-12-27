@@ -7,10 +7,10 @@ const nextConfig: NextConfig = {
         dangerouslyAllowLocalIP: true,
         remotePatterns: [
             {
-                hostname: 'readonlydemo.vendure.io',
-            },
-            {
-                hostname: 'demo.vendure.io'
+               protocol: 'https',
+               hostname: 'agxsites.southafricanorth.cloudapp.azure.com',
+               port: '',
+               pathname: '/assets/**',
             },
             {
                 hostname: 'localhost'
