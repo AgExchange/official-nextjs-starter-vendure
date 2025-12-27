@@ -121,18 +121,19 @@ export async function placeOrder(paymentMethodCode: string, metadata: Record<str
         throw new Error(data?.createPaystackPaymentIntent?.message || 'Payment failed');
     }*/
 
-if (paymentMethodCode === 'paystack' && !metadata.reference) {
-    const result = await mutate(CreatePaystackPaymentIntentMutation, {
-        redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback`
-    }, { useAuthToken: true });
+    if (paymentMethodCode === 'paystack' && !metadata.reference) {
+        const { data } = await mutate(CreatePaystackPaymentIntentMutation, {
+            input: { redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback` }
+        }, { useAuthToken: true });
 
-    const intent = result.data?.createPaystackPaymentIntent as 
-        { url?: string; message?: string } | undefined;
-
-    if (intent?.url) {
-        redirect(intent.url);
-    }
-    throw new Error(intent?.message || 'Payment failed');
+        const intent = data?.createPaystackPaymentIntent;
+        if (intent?.__typename === 'PaystackPaymentIntent') {
+            redirect(intent.url);
+        }
+        if (intent?.__typename === 'PaystackPaymentIntentError') {
+            throw new Error(intent.message);
+        }
+        throw new Error('Payment failed');
 }
 
     // Add payment to the order
