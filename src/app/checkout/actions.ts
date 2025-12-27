@@ -8,6 +8,7 @@ import {
     AddPaymentToOrderMutation,
     CreateCustomerAddressMutation,
     TransitionOrderToStateMutation,
+    CreatePaystackPaymentIntentMutation,
 } from '@/lib/vendure/mutations';
 import {revalidatePath, updateTag} from 'next/cache';
 import {redirect} from "next/navigation";
