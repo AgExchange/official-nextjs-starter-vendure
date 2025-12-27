@@ -430,6 +430,7 @@ export const UpdateCustomerEmailAddressMutation = graphql(`
     }
 `);
 
+// Query string to call backend's Paystack mutation
 export const CreatePaystackPaymentIntentMutation = graphql(`
     mutation CreatePaystackPaymentIntent($input: PaystackPaymentIntentInput!) {
         createPaystackPaymentIntent(input: $input) {
