@@ -123,7 +123,9 @@ if (paymentMethodCode === 'paystack' && !metadata.reference) {
     const { data } = await mutate(CreatePaystackPaymentIntentMutation, {
         redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback`
     }, { useAuthToken: true });
-
+    // Type assertion until codegen is run
+    const intent = result.data?.createPaystackPaymentIntent as 
+        { url?: string; message?: string } | undefined;
     if (data?.createPaystackPaymentIntent?.url) {
         redirect(data.createPaystackPaymentIntent.url);
     }
