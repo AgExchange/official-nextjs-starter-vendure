@@ -95,12 +95,9 @@ export async function transitionToArrangingPayment() {
     revalidatePath('/checkout');
 }
 
-export async function placeOrder(paymentMethodCode: string) {
+export async function placeOrder(paymentMethodCode: string, metadata: Record<string, unknown> = {}) {
     // First, transition the order to ArrangingPayment state
     await transitionToArrangingPayment();
-
-    // Prepare metadata based on payment method
-    const metadata: Record<string, unknown> = {};
 
     // For standard payment, include the required fields
     if (paymentMethodCode === 'standard-payment') {
@@ -109,15 +106,16 @@ export async function placeOrder(paymentMethodCode: string) {
         metadata.shouldErrorOnSettle = false;
     }
 
-    if (paymentMethodCode === 'paystack') {
-       const { data } = await mutate(CreatePaystackPaymentIntentMutation, {
-           input: { redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback` }
-       }, { useAuthToken: true });
-    
-       if (data?.createPaystackPaymentIntent?.url) {
-           redirect(data.createPaystackPaymentIntent.url);
-       }
-       throw new Error(data?.createPaystackPaymentIntent?.message || 'Payment failed');
+    // For Paystack: if no reference yet, create intent and redirect
+    if (paymentMethodCode === 'paystack' && !metadata.reference) {
+        const { data } = await mutate(CreatePaystackPaymentIntentMutation, {
+            input: { redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback` }
+        }, { useAuthToken: true });
+
+        if (data?.createPaystackPaymentIntent?.url) {
+            redirect(data.createPaystackPaymentIntent.url);
+        }
+        throw new Error(data?.createPaystackPaymentIntent?.message || 'Payment failed');
     }
 
     // Add payment to the order
