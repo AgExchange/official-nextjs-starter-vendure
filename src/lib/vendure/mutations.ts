@@ -430,24 +430,10 @@ export const UpdateCustomerEmailAddressMutation = graphql(`
     }
 `);
 
-/* Query string to call backend's Paystack mutation
-export const CreatePaystackPaymentIntentMutation = graphql(`
-    mutation CreatePaystackPaymentIntent($input: PaystackPaymentIntentInput!) {
-        createPaystackPaymentIntent(input: $input) {
-            ... on PaystackPaymentIntent {
-                url
-            }
-            ... on PaystackPaymentIntentError {
-                errorCode
-                message
-            }
-        }
-    }
-`);*/
-
 export const CreatePaystackPaymentIntentMutation = graphql(`
     mutation CreatePaystackPaymentIntent($redirectUrl: String!) {
         createPaystackPaymentIntent(input: { redirectUrl: $redirectUrl }) {
+            __typename
             ... on PaystackPaymentIntent {
                 url
             }
