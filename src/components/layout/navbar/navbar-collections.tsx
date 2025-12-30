@@ -1,5 +1,3 @@
-import {cacheLife} from 'next/cache';
-import {getTopCollections} from '@/lib/vendure/cached';
 import {
     NavigationMenu,
     NavigationMenuList,
@@ -7,22 +5,15 @@ import {
 } from '@/components/ui/navigation-menu';
 import {NavbarLink} from '@/components/layout/navbar/navbar-link';
 
-export async function NavbarCollections() {
-    "use cache";
-    cacheLife('days');
-
-    const collections = await getTopCollections();
-
+export function NavbarCollections() {
     return (
         <NavigationMenu>
             <NavigationMenuList>
-                {collections.map((collection) => (
-                    <NavigationMenuItem key={collection.slug}>
-                        <NavbarLink href={`/collection/${collection.slug}`}>
-                            {collection.name}
-                        </NavbarLink>
-                    </NavigationMenuItem>
-                ))}
+                <NavigationMenuItem>
+                    <NavbarLink href="https://official-nextjs-starter-vendure.vercel.app/search">
+                        Collections
+                    </NavbarLink>
+                </NavigationMenuItem>
             </NavigationMenuList>
         </NavigationMenu>
     );

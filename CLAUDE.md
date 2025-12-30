@@ -181,3 +181,5 @@ const fragmentData = readFragment(MyFragment, rawData);
 - Use `@/` path alias for imports from `src/` directory
 - Follow existing naming patterns: kebab-case for files, PascalCase for components
 - GraphQL operations use PascalCase with descriptive suffixes (e.g., `GetProductQuery`, `AddToCartMutation`)
+- Use https://deepwiki.com/vendure-ecommerce/nextjs-starter-vendure for detailed functional discovery
+- ALL CALCULATIONS are performed by the Vendure backend, FIRST look for the GraphQL mutation before doing anything local
