@@ -238,32 +238,49 @@ const fragmentData = readFragment(MyFragment, rawData);
 
 **CRITICAL: Always consult documentation BEFORE implementing Vendure features**
 
-Use the `WebFetch` tool to read these documentation URLs before making assumptions about API capabilities:
+Use the `WebFetch` tool to read these documentation URLs before making assumptions about API capabilities. This prevents piecemeal information gathering and ensures correct implementation from the start.
 
 ### Primary Documentation Sources
 
-1. **Vendure Official Documentation** - https://docs.vendure.io/
+1. **Vendure Deep Wiki** - https://deepwiki.com/vendure-ecommerce/vendure
+   - **QUERY THIS FIRST** before designing any Vendure-related code
+   - Quick reference for understanding backend implementation
+   - Search for specific features and patterns (e.g., "collections query system", "search API", "order management")
+   - Backend code examples and explanations
+   - Shows exact GraphQL queries, service methods, and resolver patterns
+
+2. **Vendure Official Documentation** - https://docs.vendure.io/
    - Complete API reference for Shop API and Admin API
    - GraphQL schema documentation
    - Guides for common patterns and features
 
-2. **Vendure Deep Wiki** - https://deepwiki.com/vendure-ecommerce/vendure
-   - Quick reference for understanding backend implementation
-   - Search for specific features and patterns
-   - Backend code examples and explanations
-
 ### Documentation Workflow
 
-When implementing Vendure-related features:
+**MANDATORY: Query documentation BEFORE writing code, not after encountering issues**
 
-1. **FIRST**: Use `WebFetch` to query the documentation URLs above
-2. **THEN**: Review the GraphQL schema in `src/graphql-env.d.ts` for exact type definitions
-3. **FINALLY**: Implement based on documented capabilities, not assumptions
+When implementing ANY Vendure-related features:
 
-Example queries to documentation:
-- "What fields does SearchInput support?" → Check Shop API docs
-- "How to filter products by multiple collections?" → Check search documentation
-- "What payment methods are available?" → Check payment integration docs
+1. **FIRST**: Use `WebFetch` to query https://deepwiki.com/vendure-ecommerce/vendure for the specific feature
+   - Examples: "collections query", "product search", "order workflow", "customer authentication"
+   - Read how Vendure implements it on the backend
+   - Understand what fields and options are exposed via GraphQL
+2. **SECOND**: Review the GraphQL schema in `src/graphql-env.d.ts` for exact type definitions
+3. **THIRD**: Check existing queries in `src/lib/vendure/queries.ts` for established patterns
+4. **FINALLY**: Implement based on documented capabilities, not assumptions
+
+### Why This Matters
+
+Following this workflow prevents:
+- ❌ Missing critical fields in GraphQL queries (e.g., `children` field in collections)
+- ❌ Implementing frontend logic that should be backend-driven
+- ❌ Guessing at API capabilities instead of using documented features
+- ❌ Requiring piecemeal corrections from code reviews
+
+Example documentation queries:
+- "collections query system" → Learn about children fields, breadcrumbs, hierarchy
+- "search API" → Understand SearchInput options, faceting, filtering
+- "order management" → Review order states, mutations, workflow
+- "authentication flow" → Check session handling, customer mutations
 
 ## Key Conventions
 
