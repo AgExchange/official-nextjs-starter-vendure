@@ -27,6 +27,17 @@ export function buildSearchInput({ searchParams, collectionSlug }: BuildSearchIn
             : [searchParams.facets]
         : [];
 
+    // Extract collection slugs from search params (for filter selections)
+    const collectionSlugs = searchParams.collection
+        ? Array.isArray(searchParams.collection)
+            ? searchParams.collection
+            : [searchParams.collection]
+        : [];
+
+    // Use the first selected collection slug (Vendure search supports single collection)
+    // If multiple collections are selected, we use the first one
+    const activeCollectionSlug = collectionSlug || (collectionSlugs.length > 0 ? collectionSlugs[0] : undefined);
+
     // Map sort parameter to Vendure SearchResultSortParameter
     const sortMapping: Record<string, { name?: 'ASC' | 'DESC'; price?: 'ASC' | 'DESC' }> = {
         'name-asc': { name: 'ASC' },
@@ -37,7 +48,7 @@ export function buildSearchInput({ searchParams, collectionSlug }: BuildSearchIn
 
     return {
         ...(searchTerm && { term: searchTerm }),
-        ...(collectionSlug && { collectionSlug }),
+        ...(activeCollectionSlug && { collectionSlug: activeCollectionSlug }),
         take,
         skip,
         groupByProduct: true,

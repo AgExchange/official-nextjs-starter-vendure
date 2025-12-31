@@ -173,6 +173,37 @@ import { MyFragment } from '@/lib/vendure/fragments';
 const fragmentData = readFragment(MyFragment, rawData);
 ```
 
+## Documentation
+
+**CRITICAL: Always consult documentation BEFORE implementing Vendure features**
+
+Use the `WebFetch` tool to read these documentation URLs before making assumptions about API capabilities:
+
+### Primary Documentation Sources
+
+1. **Vendure Official Documentation** - https://docs.vendure.io/
+   - Complete API reference for Shop API and Admin API
+   - GraphQL schema documentation
+   - Guides for common patterns and features
+
+2. **Vendure Deep Wiki** - https://deepwiki.com/vendure-ecommerce/vendure
+   - Quick reference for understanding backend implementation
+   - Search for specific features and patterns
+   - Backend code examples and explanations
+
+### Documentation Workflow
+
+When implementing Vendure-related features:
+
+1. **FIRST**: Use `WebFetch` to query the documentation URLs above
+2. **THEN**: Review the GraphQL schema in `src/graphql-env.d.ts` for exact type definitions
+3. **FINALLY**: Implement based on documented capabilities, not assumptions
+
+Example queries to documentation:
+- "What fields does SearchInput support?" → Check Shop API docs
+- "How to filter products by multiple collections?" → Check search documentation
+- "What payment methods are available?" → Check payment integration docs
+
 ## Key Conventions
 
 - Use Server Components by default; only add `'use client'` when client-side interactivity is required
@@ -181,5 +212,5 @@ const fragmentData = readFragment(MyFragment, rawData);
 - Use `@/` path alias for imports from `src/` directory
 - Follow existing naming patterns: kebab-case for files, PascalCase for components
 - GraphQL operations use PascalCase with descriptive suffixes (e.g., `GetProductQuery`, `AddToCartMutation`)
-- Use https://deepwiki.com/vendure-ecommerce/nextjs-starter-vendure for detailed functional discovery
-- ALL CALCULATIONS are performed by the Vendure backend, FIRST look for the GraphQL mutation before doing anything local
+- **ALL CALCULATIONS are performed by the Vendure backend** - FIRST look for the GraphQL mutation/query before doing anything local
+- **NEVER assume API capabilities** - Always verify against official documentation first
