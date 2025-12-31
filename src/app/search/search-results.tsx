@@ -5,11 +5,6 @@ import {ProductGrid} from "@/components/commerce/product-grid";
 import {buildSearchInput, getCurrentPage} from "@/lib/search-helpers";
 import {query} from "@/lib/vendure/api";
 import {SearchProductsQuery} from "@/lib/vendure/queries";
-import {CollectionsMenuTrigger} from "@/components/commerce/collections-menu-trigger";
-import {ResultOf} from "@/graphql";
-import {GetTopCollectionsQuery} from "@/lib/vendure/queries";
-
-type Collection = ResultOf<typeof GetTopCollectionsQuery>['collections']['items'][0];
 
 interface SearchResultsProps {
     searchParams: Promise<{
@@ -17,10 +12,9 @@ interface SearchResultsProps {
         q?: string;
         collection?: string;
     }>;
-    collections: Collection[];
 }
 
-export async function SearchResults({searchParams, collections}: SearchResultsProps) {
+export async function SearchResults({searchParams}: SearchResultsProps) {
     const searchParamsResolved = await searchParams;
     const page = getCurrentPage(searchParamsResolved);
 
@@ -31,11 +25,7 @@ export async function SearchResults({searchParams, collections}: SearchResultsPr
     return (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
-            <aside className="lg:col-span-1 space-y-6">
-                {/* Collections Menu Trigger */}
-                <CollectionsMenuTrigger collections={collections} />
-
-                {/* Facet Filters */}
+            <aside className="lg:col-span-1">
                 <Suspense fallback={<div className="h-64 animate-pulse bg-muted rounded-lg"/>}>
                     <FacetFilters productDataPromise={productDataPromise} />
                 </Suspense>

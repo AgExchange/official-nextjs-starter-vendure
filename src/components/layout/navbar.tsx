@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {NavbarCart} from '@/components/layout/navbar/navbar-cart';
 import {NavbarUser} from '@/components/layout/navbar/navbar-user';
+import {NavbarCollections} from '@/components/layout/navbar/navbar-collections';
 import {ThemeSwitcher} from '@/components/layout/navbar/theme-switcher';
 import {Suspense} from "react";
 import {SearchInput} from '@/components/layout/search-input';
@@ -12,6 +13,7 @@ export function Navbar() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
             <div className="container mx-auto px-4">
+                {/* Top Row - Logo and Actions */}
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center gap-8">
                         <Link href="/" className="text-xl font-bold">
@@ -32,6 +34,13 @@ export function Navbar() {
                             <NavbarUser/>
                         </Suspense>
                     </div>
+                </div>
+
+                {/* Collections Row */}
+                <div className="hidden sm:flex items-center justify-center pb-3">
+                    <Suspense fallback={<div className="h-6 w-96 animate-pulse bg-muted rounded" />}>
+                        <NavbarCollections />
+                    </Suspense>
                 </div>
             </div>
         </header>
