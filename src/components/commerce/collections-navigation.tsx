@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, AlertCircle } from 'lucide-react';
 import { ResultOf } from '@/graphql';
 import { GetTopCollectionsQuery, GetCollectionWithChildrenQuery } from '@/lib/vendure/queries';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { CollectionsGridSkeleton } from '@/components/shared/collections-grid-skeleton';
 
 type Collection = ResultOf<typeof GetTopCollectionsQuery>['collections']['items'][0];
 type CollectionWithChildren = NonNullable<ResultOf<typeof GetCollectionWithChildrenQuery>['collection']>;
@@ -25,6 +28,7 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
     const [currentCollection, setCurrentCollection] = useState<CollectionWithChildren | null>(null);
     const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function loadCollectionChildren(collectionId: string) {
         setLoading(true);
@@ -47,6 +51,7 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
             }
         } catch (err) {
             console.error('Load collection children error:', err);
+            setError('Unable to load collection. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -84,17 +89,36 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
 
     return (
         <div className="mb-8 pb-6 border-b">
+            {/* Error Alert */}
+            {error && (
+                <Alert variant="destructive" className="mb-4">
+                    <AlertCircle />
+                    <AlertTitle>Failed to Load Collection</AlertTitle>
+                    <AlertDescription>
+                        {error}
+                        <button
+                            onClick={() => setError(null)}
+                            className="underline ml-2 hover:no-underline"
+                        >
+                            Dismiss
+                        </button>
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {/* Header with back button */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     {breadcrumbs.length > 0 && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={handleBack}
-                            className="p-2 hover:bg-muted rounded-full transition-colors"
                             disabled={loading}
+                            aria-label="Go back to parent collection"
                         >
-                            <ChevronLeft className="w-5 h-5" />
-                        </button>
+                            <ChevronRight className="w-5 h-5 rotate-180" />
+                        </Button>
                     )}
                     <h2 className="text-xl font-semibold">
                         {currentCollection ? currentCollection.name : 'Browse Collections'}
@@ -104,31 +128,34 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
 
             {/* Breadcrumbs */}
             {breadcrumbs.length > 0 && (
-                <nav className="mb-4" aria-label="Breadcrumb">
+                <nav className="mb-4" aria-label="Collection breadcrumb navigation">
                     <ol className="flex items-center space-x-2 text-sm">
                         <li>
                             <button
                                 onClick={loadTopLevelCollections}
-                                className="text-muted-foreground hover:text-foreground hover:underline"
+                                className="text-muted-foreground hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1"
                                 disabled={loading}
+                                aria-label="Navigate to all collections"
                             >
                                 All Collections
                             </button>
                         </li>
                         {breadcrumbs.map((breadcrumb, index) => (
                             <li key={breadcrumb.id} className="flex items-center space-x-2">
-                                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                                <ChevronRight className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
                                 <button
                                     onClick={() => {
                                         if (index === breadcrumbs.length - 1) return;
                                         loadCollectionChildren(breadcrumb.id);
                                     }}
-                                    className={`${
+                                    className={`rounded px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                                         index === breadcrumbs.length - 1
                                             ? 'text-foreground'
                                             : 'text-muted-foreground hover:text-foreground hover:underline'
                                     }`}
                                     disabled={index === breadcrumbs.length - 1 || loading}
+                                    aria-label={`Navigate to ${breadcrumb.name} collection`}
+                                    aria-current={index === breadcrumbs.length - 1 ? 'page' : undefined}
                                 >
                                     {breadcrumb.name}
                                 </button>
@@ -140,13 +167,11 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
 
             {/* Collections Grid */}
             {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <div key={i} className="animate-pulse">
-                            <div className="aspect-square bg-muted rounded-lg mb-2"></div>
-                            <div className="h-4 bg-muted rounded w-3/4"></div>
-                        </div>
-                    ))}
+                <CollectionsGridSkeleton />
+            ) : collections.length === 0 ? (
+                <div className="text-center py-16 text-muted-foreground">
+                    <p className="text-lg mb-2">No collections available</p>
+                    <p className="text-sm">Try browsing other categories or check back later.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -154,20 +179,22 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
                         <button
                             key={collection.id}
                             onClick={() => handleCollectionClick(collection)}
-                            className="group text-left bg-card rounded-lg overflow-hidden hover:shadow-md transition-shadow border"
+                            className="group text-left bg-card rounded-lg overflow-hidden hover:shadow-md transition-shadow border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            aria-label={`Browse ${collection.name} collection`}
                         >
                             <div className="aspect-square bg-muted overflow-hidden">
                                 {collection.featuredAsset ? (
                                     <Image
                                         src={`${collection.featuredAsset.preview}?preset=medium&format=webp`}
-                                        alt={collection.name}
+                                        alt={`${collection.name} category image`}
                                         width={200}
                                         height={200}
+                                        loading="lazy"
                                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                                        <span className="text-muted-foreground text-2xl font-semibold">
+                                        <span className="text-muted-foreground text-2xl font-semibold" aria-hidden="true">
                                             {collection.name.charAt(0)}
                                         </span>
                                     </div>

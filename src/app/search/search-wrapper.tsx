@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 import { ResultOf } from '@/graphql';
 import { GetTopCollectionsQuery } from '@/lib/vendure/queries';
 import { CollectionsNavigation } from '@/components/commerce/collections-navigation';
+import { Button } from '@/components/ui/button';
 
 type Collection = ResultOf<typeof GetTopCollectionsQuery>['collections']['items'][0];
 
@@ -53,25 +55,15 @@ export function SearchWrapper({ initialCollections, children }: SearchWrapperPro
                     {/* Back to Collections Button - Only show if filtering by collection (not search term) */}
                     {!searchTerm && collectionFilter && (
                         <div className="mb-4">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={handleBackToCollections}
-                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                className="gap-2"
+                                aria-label="Return to browsing all collections"
                             >
-                                <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M15 19l-7-7 7-7"
-                                    />
-                                </svg>
+                                <ChevronLeft className="w-4 h-4" />
                                 Back to Collections
-                            </button>
+                            </Button>
                         </div>
                     )}
                     {children}
