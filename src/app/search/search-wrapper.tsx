@@ -41,18 +41,16 @@ export function SearchWrapper({ initialCollections, children }: SearchWrapperPro
 
     return (
         <div className="space-y-8">
-            {/* Collections Navigation Grid - Hidden when showing search results */}
-            {!showResults && (
-                <CollectionsNavigation
-                    initialCollections={initialCollections}
-                    onCollectionSelect={handleCollectionSelect}
-                />
-            )}
+            {/* Collections Navigation Grid - Always visible, manages its own display logic */}
+            <CollectionsNavigation
+                initialCollections={initialCollections}
+                onCollectionSelect={handleCollectionSelect}
+            />
 
-            {/* Search Results - Only shown when there's a search term or collection filter */}
+            {/* Search Results - Shown when there's a search term or collection filter */}
             {showResults && (
                 <>
-                    {/* Back to Collections Button - Only show if no search term */}
+                    {/* Back to Collections Button - Only show if filtering by collection (not search term) */}
                     {!searchTerm && collectionFilter && (
                         <div className="mb-4">
                             <button

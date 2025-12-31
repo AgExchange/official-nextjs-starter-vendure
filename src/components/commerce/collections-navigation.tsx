@@ -35,14 +35,12 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
             const collection: CollectionWithChildren = await response.json();
 
             if (collection) {
-                // If collection has no children, trigger search for this collection
-                if (!collection.children || collection.children.length === 0) {
-                    if (onCollectionSelect) {
-                        onCollectionSelect(collection.slug);
-                    }
-                    return;
+                // Always trigger search for this collection (products shown at every level)
+                if (onCollectionSelect) {
+                    onCollectionSelect(collection.slug);
                 }
 
+                // Update navigation state
                 setCurrentCollection(collection);
                 setBreadcrumbs(collection.breadcrumbs?.filter(b => b.slug !== '__root_collection__') || []);
                 setCollections(collection.children || []);
@@ -76,7 +74,11 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
         }
     }
 
-    if (collections.length === 0 && !currentCollection) {
+    // Only hide if we have no collections to show
+    // At top level (no currentCollection): always show initial collections
+    // At a sub-level (has currentCollection): only show if there are sub-collections
+    if (collections.length === 0 && currentCollection) {
+        // We're at a leaf collection with no children - hide the navigation
         return null;
     }
 
