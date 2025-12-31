@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ChevronRight, AlertCircle } from 'lucide-react';
 import { ResultOf } from '@/graphql';
@@ -8,6 +8,7 @@ import { GetTopCollectionsQuery, GetCollectionWithChildrenQuery } from '@/lib/ve
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CollectionsGridSkeleton } from '@/components/shared/collections-grid-skeleton';
+import { useSearchParams } from 'next/navigation';
 
 type Collection = ResultOf<typeof GetTopCollectionsQuery>['collections']['items'][0];
 type CollectionWithChildren = NonNullable<ResultOf<typeof GetCollectionWithChildrenQuery>['collection']>;
@@ -29,6 +30,18 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
     const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const collectionParam = searchParams.get('collection');
+
+    // Reset to top level when collection parameter is removed
+    useEffect(() => {
+        if (!collectionParam && currentCollection) {
+            // URL has no collection param but we have state - reset to top level
+            setCurrentCollection(null);
+            setBreadcrumbs([]);
+            setCollections(initialCollections);
+        }
+    }, [collectionParam, currentCollection, initialCollections]);
 
     async function loadCollectionChildren(collectionId: string) {
         setLoading(true);

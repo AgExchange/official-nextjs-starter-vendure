@@ -32,7 +32,8 @@ export function SearchWrapper({ initialCollections, children }: SearchWrapperPro
     };
 
     const handleBackToCollections = () => {
-        router.push('/search');
+        // Reset collection selection to trigger state reset in CollectionsNavigation
+        handleCollectionSelect('');
     };
 
     return (
