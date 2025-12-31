@@ -43,11 +43,18 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
         }
     }, [collectionParam, currentCollection, initialCollections]);
 
-    async function loadCollectionChildren(collectionId: string) {
+    async function loadCollectionChildren(collectionId: string, collectionSlug?: string) {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`/api/collections/${collectionId}`);
+            // Try with ID first, then fallback to slug if provided
+            let response = await fetch(`/api/collections/${collectionId}`);
+
+            // If ID fails and we have a slug, try with slug
+            if (!response.ok && collectionSlug) {
+                console.warn(`Collection ID ${collectionId} not found, trying with slug: ${collectionSlug}`);
+                response = await fetch(`/api/collections/${collectionSlug}`);
+            }
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
@@ -80,7 +87,7 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
     }
 
     function handleCollectionClick(collection: Collection) {
-        loadCollectionChildren(collection.id);
+        loadCollectionChildren(collection.id, collection.slug);
     }
 
     function handleBack() {

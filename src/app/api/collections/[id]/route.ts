@@ -7,15 +7,22 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        console.log('[API] Fetching collection with ID:', id);
+        console.log('[API] Fetching collection with ID/Slug:', id);
 
-        const collection = await getCollectionWithChildren({ id });
+        // Try as ID first, then as slug
+        let collection = await getCollectionWithChildren({ id });
+
+        if (!collection) {
+            console.log('[API] Not found by ID, trying as slug:', id);
+            collection = await getCollectionWithChildren({ slug: id });
+        }
+
         console.log('[API] Collection result:', collection ? 'Found' : 'Not found');
 
         if (!collection) {
-            console.warn('[API] Collection not found for ID:', id);
+            console.warn('[API] Collection not found for ID/Slug:', id);
             return NextResponse.json(
-                { error: `Collection not found for ID: ${id}` },
+                { error: `Collection not found for ID/Slug: ${id}` },
                 { status: 404 }
             );
         }
