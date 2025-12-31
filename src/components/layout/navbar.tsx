@@ -17,6 +17,9 @@ export function Navbar() {
                         <Link href="/" className="text-xl font-bold">
                             <Image src="/vendure.svg" alt="Vendure" width={40} height={27} className="h-6 w-auto dark:invert" />
                         </Link>
+                        <Link href="/search" className="text-sm font-medium hover:underline">
+                            Collections
+                        </Link>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="hidden lg:flex">
