@@ -48,6 +48,11 @@ export const GetCollectionWithChildrenQuery = graphql(`
                     id
                     preview
                 }
+                children {
+                    id
+                    name
+                    slug
+                }
             }
         }
     }
