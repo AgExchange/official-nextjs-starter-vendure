@@ -87,7 +87,8 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
     }
 
     function handleCollectionClick(collection: Collection) {
-        loadCollectionChildren(collection.id, collection.slug);
+        // Navigate to collection page instead of drilling in-place
+        window.location.href = `/collection/${collection.slug}`;
     }
 
     function handleBack() {
