@@ -6,6 +6,67 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Next.js 16 storefront built with the App Router for Vendure headless commerce. Uses TypeScript, React 19, Tailwind CSS 4, and gql.tada for type-safe GraphQL operations.
 
+## Headless Architecture Principles
+
+**CRITICAL: Maintain headless backend architecture principles in all storefront developments**
+
+This storefront is built on a headless architecture where the Vendure backend handles all business logic, calculations, and data management. The frontend's role is strictly to provide an excellent user experience.
+
+### Core Principles
+
+1. **Leave the Heavy Lifting to the Backend**
+   - All business logic resides in Vendure (pricing, taxes, inventory, order processing)
+   - Never replicate backend logic in the frontend
+   - Trust the backend as the single source of truth
+
+2. **Frontend Focus: UX Functionality**
+   - The storefront should focus exclusively on user interface and user experience
+   - Handle presentation, navigation, and interaction patterns
+   - Optimize for performance, accessibility, and responsiveness
+
+3. **Backend-First Mindset**
+   - Before implementing any feature, check if the backend provides it via GraphQL
+   - Use mutations for all data modifications (cart updates, orders, user profiles)
+   - Query the backend for all calculations (totals, discounts, shipping costs)
+
+4. **What Belongs Where**
+   - **Backend (Vendure)**: Business rules, calculations, validations, data persistence, workflows
+   - **Frontend (Storefront)**: Display, forms, navigation, animations, client-side state for UI only
+
+### Examples
+
+**❌ WRONG - Frontend doing calculations:**
+```typescript
+// Don't calculate totals in the frontend
+const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const tax = subtotal * 0.15;
+const total = subtotal + tax;
+```
+
+**✅ CORRECT - Backend provides calculations:**
+```typescript
+// Query the backend for accurate totals
+const { data } = await query(GetActiveOrderQuery);
+const { subTotal, total, totalWithTax } = data.activeOrder;
+```
+
+**❌ WRONG - Frontend managing inventory:**
+```typescript
+// Don't track or validate inventory in the frontend
+if (product.stock - cartQuantity < requestedQuantity) {
+  showError("Insufficient stock");
+}
+```
+
+**✅ CORRECT - Backend handles inventory:**
+```typescript
+// Let the backend validate and respond with appropriate errors
+const result = await mutate(AddItemToOrderMutation, { productVariantId, quantity });
+if (result.data.addItemToOrder.__typename === 'InsufficientStockError') {
+  showError(result.data.addItemToOrder.message);
+}
+```
+
 ## Development Commands
 
 ```bash
