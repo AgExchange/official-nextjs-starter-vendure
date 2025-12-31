@@ -18,27 +18,25 @@ export function SearchWrapper({ initialCollections, children }: SearchWrapperPro
     const searchParams = useSearchParams();
     const [showResults, setShowResults] = useState(false);
     const searchTerm = searchParams.get('q');
+    const collectionFilter = searchParams.get('collection');
 
     useEffect(() => {
-        // Show results if there's a search term
-        setShowResults(!!searchTerm);
-    }, [searchTerm]);
+        // Show results if there's a search term OR a collection filter
+        setShowResults(!!(searchTerm || collectionFilter));
+    }, [searchTerm, collectionFilter]);
 
     const handleCollectionSelect = (collectionSlug: string) => {
         if (collectionSlug) {
             // Navigate to search page with collection filter
             router.push(`/search?collection=${collectionSlug}`);
-            setShowResults(true);
         } else {
-            // Clear collection filter
+            // Clear collection filter and go back to browsing
             router.push('/search');
-            setShowResults(false);
         }
     };
 
     const handleBackToCollections = () => {
         router.push('/search');
-        setShowResults(false);
     };
 
     return (
@@ -55,7 +53,7 @@ export function SearchWrapper({ initialCollections, children }: SearchWrapperPro
             {showResults && (
                 <>
                     {/* Back to Collections Button - Only show if no search term */}
-                    {!searchTerm && (
+                    {!searchTerm && collectionFilter && (
                         <div className="mb-4">
                             <button
                                 onClick={handleBackToCollections}
