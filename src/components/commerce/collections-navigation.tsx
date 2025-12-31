@@ -45,9 +45,15 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
 
     async function loadCollectionChildren(collectionId: string) {
         setLoading(true);
+        setError(null);
         try {
             const response = await fetch(`/api/collections/${collectionId}`);
-            if (!response.ok) throw new Error('Failed to load collection');
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                console.error('API Error:', response.status, errorData);
+                throw new Error(errorData.error || `Server error: ${response.status}`);
+            }
 
             const collection: CollectionWithChildren = await response.json();
 
@@ -61,10 +67,13 @@ export function CollectionsNavigation({ initialCollections, onCollectionSelect }
                 setCurrentCollection(collection);
                 setBreadcrumbs(collection.breadcrumbs?.filter(b => b.slug !== '__root_collection__') || []);
                 setCollections(collection.children || []);
+            } else {
+                throw new Error('Collection data is empty');
             }
         } catch (err) {
             console.error('Load collection children error:', err);
-            setError('Unable to load collection. Please try again.');
+            const errorMessage = err instanceof Error ? err.message : 'Unable to load collection';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
