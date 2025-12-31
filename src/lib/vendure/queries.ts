@@ -13,6 +13,11 @@ export const GetTopCollectionsQuery = graphql(`
                     id
                     preview
                 }
+                children {
+                    id
+                    name
+                    slug
+                }
             }
         }
     }
