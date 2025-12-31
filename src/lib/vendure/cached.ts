@@ -29,11 +29,12 @@ export async function getAvailableCountriesCached() {
 
 /**
  * Get top-level collections with caching enabled.
- * Collections rarely change, so we cache them for 1 day.
+ * Collections can change frequently (added/removed from channel, visibility changes).
+ * Cache for 5 minutes to keep content fresh while reducing API calls.
  */
 export async function getTopCollections() {
     'use cache';
-    cacheLife('days');
+    cacheLife('minutes');
     cacheTag('collections');
 
     const result = await query(GetTopCollectionsQuery);
@@ -42,11 +43,11 @@ export async function getTopCollections() {
 
 /**
  * Get a specific collection with its children and breadcrumbs.
- * Cached for 1 day.
+ * Cache for 5 minutes to keep content fresh while reducing API calls.
  */
 export async function getCollectionWithChildren(idOrSlug: { id?: string; slug?: string }) {
     'use cache';
-    cacheLife('days');
+    cacheLife('minutes');
     cacheTag('collections');
 
     const result = await query(GetCollectionWithChildrenQuery, idOrSlug);

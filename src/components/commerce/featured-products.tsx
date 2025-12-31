@@ -5,7 +5,7 @@ import {GetCollectionProductsQuery} from "@/lib/vendure/queries";
 
 async function getFeaturedCollectionProducts() {
     'use cache'
-    cacheLife('days')
+    cacheLife('minutes')
 
     // Fetch featured products from a specific collection
     // Replace 'featured' with your actual collection slug

@@ -19,7 +19,7 @@ import {
 
 async function getCollectionProducts(slug: string, searchParams: { [key: string]: string | string[] | undefined }) {
     'use cache';
-    cacheLife('hours');
+    cacheLife('minutes');
     cacheTag(`collection-${slug}`);
 
     return query(SearchProductsQuery, {
@@ -32,7 +32,7 @@ async function getCollectionProducts(slug: string, searchParams: { [key: string]
 
 async function getCollectionMetadata(slug: string) {
     'use cache';
-    cacheLife('hours');
+    cacheLife('minutes');
     cacheTag(`collection-meta-${slug}`);
 
     return query(GetCollectionProductsQuery, {
