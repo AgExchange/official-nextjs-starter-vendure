@@ -8,6 +8,41 @@ export const GetTopCollectionsQuery = graphql(`
                 id
                 name
                 slug
+                description
+                featuredAsset {
+                    id
+                    preview
+                }
+            }
+        }
+    }
+`);
+
+export const GetCollectionWithChildrenQuery = graphql(`
+    query GetCollectionWithChildren($id: ID, $slug: String) {
+        collection(id: $id, slug: $slug) {
+            id
+            name
+            slug
+            description
+            featuredAsset {
+                id
+                preview
+            }
+            breadcrumbs {
+                id
+                name
+                slug
+            }
+            children {
+                id
+                name
+                slug
+                description
+                featuredAsset {
+                    id
+                    preview
+                }
             }
         }
     }

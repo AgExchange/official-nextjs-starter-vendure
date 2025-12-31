@@ -1,6 +1,6 @@
 import {cacheLife, cacheTag} from 'next/cache';
 import {query} from './api';
-import {GetActiveChannelQuery, GetAvailableCountriesQuery, GetTopCollectionsQuery} from './queries';
+import {GetActiveChannelQuery, GetAvailableCountriesQuery, GetTopCollectionsQuery, GetCollectionWithChildrenQuery} from './queries';
 
 /**
  * Get the active channel with caching enabled.
@@ -38,4 +38,17 @@ export async function getTopCollections() {
 
     const result = await query(GetTopCollectionsQuery);
     return result.data.collections.items;
+}
+
+/**
+ * Get a specific collection with its children and breadcrumbs.
+ * Cached for 1 day.
+ */
+export async function getCollectionWithChildren(idOrSlug: { id?: string; slug?: string }) {
+    'use cache';
+    cacheLife('days');
+    cacheTag('collections');
+
+    const result = await query(GetCollectionWithChildrenQuery, idOrSlug);
+    return result.data.collection;
 }
