@@ -72,7 +72,7 @@ export async function OrderConfirmation({params}: PageProps<'/order-confirmation
                     <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4"/>
                     <h1 className="text-3xl font-bold mb-2">Order Confirmed!</h1>
                     <p className="text-muted-foreground">
-                        Thank you for your order. Your order number is
+                        Thank you for your order. Your order number is{' '}
                         <span className="font-semibold">{order.code}</span>
                     </p>
                 </div>
