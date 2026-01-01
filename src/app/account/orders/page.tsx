@@ -42,6 +42,9 @@ export default async function OrdersPage(props: PageProps<'/account/orders'>) {
                         notEq: 'AddingItems',
                     },
                 },
+                sort: {
+                    createdAt: 'DESC',
+                },
             },
         },
         {useAuthToken: true}
@@ -137,7 +140,7 @@ export default async function OrdersPage(props: PageProps<'/account/orders'>) {
                                                 return (
                                                     <PaginationItem key={page}>
                                                         <PaginationLink
-                                                            href={`/src/app/%5Blocale%5D/account/orders?page=${page}`}
+                                                            href={`/account/orders?page=${page}`}
                                                             isActive={page === currentPage}
                                                         >
                                                             {page}
