@@ -444,3 +444,17 @@ export const CreatePaystackPaymentIntentMutation = graphql(`
         }
     }
 `);
+export const CreatePayfastPaymentIntentMutation = gql`
+  mutation CreatePayfastPaymentIntent($redirectUrl: String!) {
+      createPayfastPaymentIntent(input: { redirectUrl: $redirectUrl }) {
+          __typename
+          ... on PayfastPaymentIntent {
+              url
+          }
+          ... on PayfastPaymentIntentError {
+              errorCode
+              message
+          }
+      }
+  }
+`;
