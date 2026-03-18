@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { placeOrder } from '../actions';
+import { placeOrder, transitionToAddingItems } from '../actions';
 
 export default function PaymentCallbackPage() {
     const searchParams = useSearchParams();
@@ -16,10 +16,10 @@ export default function PaymentCallbackPage() {
             return;
         }
 
-        // PayFast cancelled: redirect back to checkout
+        // PayFast cancelled: transition order back to AddingItems, then return to checkout
         const cancelled = searchParams.get('cancelled');
         if (cancelled === '1') {
-            router.replace('/checkout');
+            transitionToAddingItems().finally(() => router.replace('/checkout'));
             return;
         }
 

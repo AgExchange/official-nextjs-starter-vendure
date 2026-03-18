@@ -80,6 +80,23 @@ export async function createCustomerAddress(address: AddressInput) {
     return result.data.createCustomerAddress;
 }
 
+export async function transitionToAddingItems() {
+    const result = await mutate(
+        TransitionOrderToStateMutation,
+        {state: 'AddingItems'},
+        {useAuthToken: true}
+    );
+
+    if (result.data.transitionOrderToState?.__typename === 'OrderStateTransitionError') {
+        const errorResult = result.data.transitionOrderToState;
+        throw new Error(
+            `Failed to transition order state: ${errorResult.errorCode} - ${errorResult.message}`
+        );
+    }
+
+    revalidatePath('/checkout');
+}
+
 export async function transitionToArrangingPayment() {
     const result = await mutate(
         TransitionOrderToStateMutation,
