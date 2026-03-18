@@ -1,18 +1,34 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { placeOrder } from '../actions';
 
 export default function PaymentCallbackPage() {
     const searchParams = useSearchParams();
+    const router = useRouter();
 
     useEffect(() => {
+        // Paystack: reference param present → verify and settle
         const reference = searchParams.get('reference') || searchParams.get('trxref');
         if (reference) {
             placeOrder('paystack', { reference });
+            return;
         }
-    }, [searchParams]);
+
+        // PayFast cancelled: redirect back to checkout
+        const cancelled = searchParams.get('cancelled');
+        if (cancelled === '1') {
+            router.replace('/checkout');
+            return;
+        }
+
+        // PayFast success: ITN settled the order server-side, redirect to confirmation
+        const orderCode = searchParams.get('orderCode');
+        if (orderCode) {
+            router.replace(`/order-confirmation/${orderCode}`);
+        }
+    }, [searchParams, router]);
 
     return (
         <div className="max-w-md mx-auto mt-16 p-6 text-center">
