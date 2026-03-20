@@ -41,6 +41,12 @@ interface PaymentMethod {
   eligibilityMessage?: string | null;
 }
 
+export interface PayfastMethod {
+  code: string;
+  label: string;
+  description: string;
+}
+
 interface CheckoutContextType {
   order: CheckoutOrder;
   addresses: CustomerAddress[];
@@ -49,6 +55,10 @@ interface CheckoutContextType {
   paymentMethods: PaymentMethod[];
   selectedPaymentMethodCode: string | null;
   setSelectedPaymentMethodCode: (code: string | null) => void;
+  payfastPaymentMethod: string | null;
+  setPayfastPaymentMethod: (method: string | null) => void;
+  payfastMethods: PayfastMethod[];
+  setPayfastMethods: (methods: PayfastMethod[]) => void;
 }
 
 const CheckoutContext = createContext<CheckoutContextType | null>(null);
@@ -73,6 +83,8 @@ export function CheckoutProvider({
   const [selectedPaymentMethodCode, setSelectedPaymentMethodCode] = useState<string | null>(
     paymentMethods.length === 1 ? paymentMethods[0].code : null
   );
+  const [payfastPaymentMethod, setPayfastPaymentMethod] = useState<string | null>(null);
+  const [payfastMethods, setPayfastMethods] = useState<PayfastMethod[]>([]);
 
   return (
     <CheckoutContext.Provider
@@ -84,6 +96,10 @@ export function CheckoutProvider({
         paymentMethods,
         selectedPaymentMethodCode,
         setSelectedPaymentMethodCode,
+        payfastPaymentMethod,
+        setPayfastPaymentMethod,
+        payfastMethods,
+        setPayfastMethods,
       }}
     >
       {children}

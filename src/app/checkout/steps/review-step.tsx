@@ -12,7 +12,7 @@ interface ReviewStepProps {
 }
 
 export default function ReviewStep({ onEditStep }: ReviewStepProps) {
-  const { order, paymentMethods, selectedPaymentMethodCode } = useCheckout();
+  const { order, paymentMethods, selectedPaymentMethodCode, payfastPaymentMethod, payfastMethods } = useCheckout();
   const [loading, setLoading] = useState(false);
 
   const selectedPaymentMethod = paymentMethods.find(
@@ -24,7 +24,7 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
 
     setLoading(true);
     try {
-      await placeOrderAction(selectedPaymentMethodCode);
+      await placeOrderAction(selectedPaymentMethodCode, {}, payfastPaymentMethod || undefined);
     } catch (error) {
       // Check if this is a Next.js redirect (which is expected)
       if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) {
@@ -115,7 +115,12 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
             <div className="text-sm space-y-3">
               <div>
                 <p className="font-medium">{selectedPaymentMethod.name}</p>
-                {selectedPaymentMethod.description && (
+                {payfastPaymentMethod && (
+                  <p className="text-muted-foreground mt-1">
+                    via {payfastMethods.find(m => m.code === payfastPaymentMethod)?.label ?? payfastPaymentMethod}
+                  </p>
+                )}
+                {!payfastPaymentMethod && selectedPaymentMethod.description && (
                   <p className="text-muted-foreground mt-1">
                     {selectedPaymentMethod.description}
                   </p>

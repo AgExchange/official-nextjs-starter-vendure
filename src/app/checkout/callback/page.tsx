@@ -8,6 +8,7 @@ export default function PaymentCallbackPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [cancelled, setCancelled] = useState(false);
+    const [failed, setFailed] = useState(false);
     const [transitioning, setTransitioning] = useState(false);
 
     useEffect(() => {
@@ -18,13 +19,19 @@ export default function PaymentCallbackPage() {
             return;
         }
 
-        // PayFast cancelled: show cancellation screen
+        // PayFast cancelled
         if (searchParams.get('cancelled') === '1') {
             setCancelled(true);
             return;
         }
 
-        // PayFast success: ITN settled the order server-side, redirect to confirmation
+        // PayFast payment not confirmed — backend verified and flagged as failed
+        if (searchParams.get('paymentFailed') === '1') {
+            setFailed(true);
+            return;
+        }
+
+        // PayFast success — backend already verified the order is settled
         const orderCode = searchParams.get('orderCode');
         if (orderCode) {
             router.replace(`/order-confirmation/${orderCode}`);
@@ -61,6 +68,43 @@ export default function PaymentCallbackPage() {
                         className="w-full py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Continue Shopping
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (failed) {
+        return (
+            <div className="max-w-md mx-auto mt-16 p-6 text-center">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                </div>
+                <h1 className="text-xl font-semibold text-gray-900 mb-2">Payment Not Confirmed</h1>
+                <p className="text-gray-500 mb-2">
+                    Your payment could not be verified. This can happen if the payment is still processing.
+                </p>
+                <p className="text-gray-500 mb-8">
+                    If your payment was deducted, please contact us and we will resolve it. Otherwise, you can try again.
+                </p>
+                <div className="flex flex-col gap-3">
+                    <button
+                        disabled={transitioning}
+                        onClick={() => {
+                            setTransitioning(true);
+                            transitionToAddingItems().then(() => router.replace('/checkout'));
+                        }}
+                        className="w-full py-3 px-4 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {transitioning ? 'Loading...' : 'Try Again'}
+                    </button>
+                    <button
+                        onClick={() => router.replace('/')}
+                        className="w-full py-3 px-4 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                    >
+                        Back to Shop
                     </button>
                 </div>
             </div>

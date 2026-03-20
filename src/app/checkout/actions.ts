@@ -1,6 +1,6 @@
 'use server';
 
-import {mutate} from '@/lib/vendure/api';
+import {mutate, query} from '@/lib/vendure/api';
 import {
     SetOrderShippingAddressMutation,
     SetOrderBillingAddressMutation,
@@ -11,6 +11,7 @@ import {
     CreatePaystackPaymentIntentMutation,
     CreatePayfastPaymentIntentMutation,
 } from '@/lib/vendure/mutations';
+import { GetOrderDetailQuery } from '@/lib/vendure/queries';
 import {revalidatePath, updateTag} from 'next/cache';
 import {redirect} from "next/navigation";
 
@@ -114,7 +115,16 @@ export async function transitionToArrangingPayment() {
     revalidatePath('/checkout');
 }
 
-export async function placeOrder(paymentMethodCode: string, metadata: Record<string, unknown> = {}) {
+/**
+ * Returns the current state of an order by code.
+ * Used by the PayFast callback page to poll until the ITN settles the order.
+ */
+export async function getOrderState(orderCode: string): Promise<string | null> {
+    const result = await query(GetOrderDetailQuery, { code: orderCode }, { useAuthToken: true });
+    return result.data?.orderByCode?.state ?? null;
+}
+
+export async function placeOrder(paymentMethodCode: string, metadata: Record<string, unknown> = {}, payfastPaymentMethod?: string) {
     // First, transition the order to ArrangingPayment state
     if (!metadata.reference) {
         await transitionToArrangingPayment();
@@ -155,7 +165,8 @@ export async function placeOrder(paymentMethodCode: string, metadata: Record<str
     }
     if (paymentMethodCode === 'payfast') {
        const { data } = await mutate(CreatePayfastPaymentIntentMutation, {
-           redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback`
+           redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/callback`,
+           ...(payfastPaymentMethod ? { paymentMethod: payfastPaymentMethod as any } : {}),
        }, { useAuthToken: true });
 
        const intent = data?.createPayfastPaymentIntent;

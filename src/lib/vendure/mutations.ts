@@ -445,8 +445,8 @@ export const CreatePaystackPaymentIntentMutation = graphql(`
     }
 `);
 export const CreatePayfastPaymentIntentMutation = graphql(`
-    mutation CreatePayfastPaymentIntent($redirectUrl: String!) {
-        createPayfastPaymentIntent(input: { redirectUrl: $redirectUrl }) {
+    mutation CreatePayfastPaymentIntent($redirectUrl: String!, $paymentMethod: PayfastPaymentMethod) {
+        createPayfastPaymentIntent(input: { redirectUrl: $redirectUrl, paymentMethod: $paymentMethod }) {
             __typename
             ... on PayfastPaymentIntent {
                 url

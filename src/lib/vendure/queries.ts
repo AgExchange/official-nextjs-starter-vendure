@@ -495,3 +495,13 @@ export const GetCollectionProductsQuery = graphql(`
         }
     }
 `, [ProductCardFragment]);
+
+export const PayfastAvailablePaymentMethodsQuery = graphql(`
+    query PayfastAvailablePaymentMethods {
+        payfastAvailablePaymentMethods {
+            code
+            label
+            description
+        }
+    }
+`);
