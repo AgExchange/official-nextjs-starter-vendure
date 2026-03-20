@@ -11,7 +11,7 @@ import {
     CreatePaystackPaymentIntentMutation,
     CreatePayfastPaymentIntentMutation,
 } from '@/lib/vendure/mutations';
-import { GetOrderDetailQuery } from '@/lib/vendure/queries';
+import { GetOrderDetailQuery, PayfastAvailablePaymentMethodsQuery } from '@/lib/vendure/queries';
 import {revalidatePath, updateTag} from 'next/cache';
 import {redirect} from "next/navigation";
 
@@ -119,6 +119,11 @@ export async function transitionToArrangingPayment() {
  * Returns the current state of an order by code.
  * Used by the PayFast callback page to poll until the ITN settles the order.
  */
+export async function getPayfastAvailableMethods(): Promise<Array<{ code: string; label: string; description: string }>> {
+    const result = await query(PayfastAvailablePaymentMethodsQuery, undefined, { useAuthToken: true });
+    return (result.data as any)?.payfastAvailablePaymentMethods ?? [];
+}
+
 export async function getOrderState(orderCode: string): Promise<string | null> {
     const result = await query(GetOrderDetailQuery, { code: orderCode }, { useAuthToken: true });
     return result.data?.orderByCode?.state ?? null;

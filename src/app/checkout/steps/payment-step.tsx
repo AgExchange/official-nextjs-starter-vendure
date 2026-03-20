@@ -14,8 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { CreditCard, Check } from 'lucide-react';
 import { useCheckout } from '../checkout-provider';
-import { query } from '@/lib/vendure/api';
-import { PayfastAvailablePaymentMethodsQuery } from '@/lib/vendure/queries';
+import { getPayfastAvailableMethods } from '../actions';
 
 interface PaymentStepProps {
   onComplete: () => void;
@@ -33,10 +32,9 @@ export default function PaymentStep({ onComplete }: PaymentStepProps) {
   } = useCheckout();
 
   useEffect(() => {
-    query(PayfastAvailablePaymentMethodsQuery, undefined, { useAuthToken: true })
-      .then(({ data }) => {
-        const methods = (data as any)?.payfastAvailablePaymentMethods;
-        if (Array.isArray(methods) && methods.length > 0) {
+    getPayfastAvailableMethods()
+      .then((methods) => {
+        if (methods.length > 0) {
           setPayfastMethods(methods);
           // Auto-select when only one method is configured for this channel
           if (methods.length === 1) {
